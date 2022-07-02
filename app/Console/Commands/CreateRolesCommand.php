@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Spatie\Permission\Models\Role;
 
 class CreateRolesCommand extends Command
 {
@@ -11,15 +12,13 @@ class CreateRolesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
-
+    protected $signature = 'command:create-roles';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
-
+    protected $description = 'Command create roles';
     /**
      * Execute the console command.
      *
@@ -27,6 +26,10 @@ class CreateRolesCommand extends Command
      */
     public function handle()
     {
+        $roles =['Admin','Edit','User'];
+        foreach ($roles as $role) {
+            Role::create(['name'=>$role]);
+        }
         return 0;
     }
 }
