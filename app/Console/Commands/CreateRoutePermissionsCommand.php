@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 class CreateRoutePermissionsCommand extends Command
 {
@@ -11,15 +13,13 @@ class CreateRoutePermissionsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
-
+    protected $signature = 'command:create-permission-routes';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
-
+    protected $description = 'Tạo permission từ routes';
     /**
      * Execute the console command.
      *
@@ -27,6 +27,16 @@ class CreateRoutePermissionsCommand extends Command
      */
     public function handle()
     {
-        return 0;
+        $routers = Route::getRoutes()->getRoutes();
+        foreach ($routers as $route) {
+            if ($route->getName() != '' && $route->getAction()['middleware']['0'] == 'web') {
+                $permission = Permission::where('name', $route->getName())->first();
+                if (is_null($permission)) {
+                    Permission::create(['name' => $route->getName()]);
+                }
+            }
+            $this->info('Permission routes added successfully.');
+        }
+        Permission::create(['name'=>'all']);
     }
 }
